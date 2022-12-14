@@ -1,29 +1,18 @@
-import FormItem from '../FormItem/index'
+import { useState } from 'react'
+import Modal from '../Modal'
 import '../../index.css'
+import {Link} from 'react-router-dom'
 
 function App() {
+
+  const [modalActive, setModalActive] = useState(false);
+
   return (
     <div className='App'>
-      <FormItem
-        title={'Registration'}
-        button={{ submit: 'Sign in', redirect: 'Login' }}
-        infoText={'By registering on the site, you agree to our Rules and Privacy Policy and agree to receive newsletters.'}
-        formType={'registration'}
-      />
-
-      <FormItem
-        title={'Login'}
-        button={{ submit: 'Login', redirect: 'Sign in' }}
-        infoText={'Forget password?'}
-        formType={'registration'}
-      />
-
-      <FormItem
-        title={'New password'}
-        button={{ submit: 'New password' }}
-        infoText={'The temporary password is valid for 24 hours.'}
-        formType={'registration'}
-      />
+      <Link to='/registration_form'>
+        <button className='button' onClick={() => setModalActive(true)}>open modal window</button>
+      </Link>
+      <Modal active={modalActive} setActive={setModalActive}/>
     </div>
   );
 }

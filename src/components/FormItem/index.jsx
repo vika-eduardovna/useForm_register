@@ -3,15 +3,16 @@ import FormButton from '../FormButton'
 import FormInput from '../FormInput'
 import s from './index.module.css'
 import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 
-export default function FormItem({ title, button, infoText, formType }) {
+export default function FormItem({ title, button, infoText, formType, infoTextAdditional, btn_link }) {
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     mode: 'onBlur'
   });
-
   const submit = (data) => {
     console.log(data)
+    reset()
   }
 
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -36,6 +37,7 @@ export default function FormItem({ title, button, infoText, formType }) {
   return (
     <form className={s.form_item} onSubmit={handleSubmit(submit)}>
       <p className={s.form_title}>{title}</p>
+      <p className={s.add_text}>{infoTextAdditional}</p>
       <FormInput
         {...emailRegister}
         id='email'
@@ -48,21 +50,36 @@ export default function FormItem({ title, button, infoText, formType }) {
         {errors?.email && <p>{errors?.email?.message}</p>}
       </div>
 
-      <FormInput
-        {...passwordRegister}
-        name='password'
-        type='password'
-        placeholder='Password'
-      />
+      {['registration', 'login'].includes(formType)
+        ?
+        <FormInput
+          {...passwordRegister}
+          name='password'
+          type='password'
+          placeholder='Password'
+        />
+        : ''}
 
       <div>
         {errors?.password && <p>{errors?.password?.message}</p>}
       </div>
 
-      <p className={s.info_text}>{infoText}</p>
-
+      {
+        ['registration', 'reset_password'].includes(formType)
+        ? <p className={s.info_text}>{infoText}</p>
+        : <Link to={'/reset_password_form'} style={{textDecoration: 'none'}}>
+          <p className={s.info_text}>{infoText}</p>
+        </Link>
+        
+      }
       <FormButton color='yellow'>{button.submit}</FormButton>
-      <FormButton color='white'>{button.redirect}</FormButton>
+      {
+        ['registration', 'login'].includes(formType)
+          ? <Link to={btn_link} style={{ textDecoration: 'none' }}>
+            <FormButton color='white'>{button.redirect}</FormButton>
+          </Link>
+          : ''
+      }
     </form>
   )
 }
